@@ -3,19 +3,46 @@ include 'PHP/connection.php';
 
 
 if(isset($_POST["submit"])) {
-    $name = $_POST["name"];
-    $password = $_POST["password"];
-    $sql = "INSERT INTO 'login' (name,password) VALUES ('$name','$password')";
-    $result = mysqli_query($con, $sql);
-   
-    if($result) {
-        echo "Data Inserted Successfully";
-    } else {
-        echo "Error: ";
-    }
+    // Validate and sanitize user inputs
+    $fname = filter_input(INPUT_POST, "fname", FILTER_SANITIZE_STRING);
+    $lname = filter_input(INPUT_POST, "lname", FILTER_SANITIZE_STRING);
+    $sname = filter_input(INPUT_POST, "sname", FILTER_SANITIZE_STRING);
+    $gender = filter_input(INPUT_POST, "gender", FILTER_SANITIZE_STRING);
+    $DOB = filter_input(INPUT_POST, "date", FILTER_SANITIZE_STRING);
+    $AdmissionNo = filter_input(INPUT_POST, "admission", FILTER_SANITIZE_NUMBER_INT);
+    $Religion = filter_input(INPUT_POST, "religion", FILTER_SANITIZE_STRING);
+    $PEmail = filter_input(INPUT_POST, "Pemail", FILTER_SANITIZE_EMAIL);
+    $Class = filter_input(INPUT_POST, "class", FILTER_SANITIZE_NUMBER_INT);
+    $PContact = filter_input(INPUT_POST, "Pcontact", FILTER_SANITIZE_NUMBER_INT);
+    $ShortBio = filter_input(INPUT_POST, "message", FILTER_SANITIZE_STRING);
+    $ProfilePic = filter_input(INPUT_POST, "Profilepic", FILTER_SANITIZE_STRING);
     
+    // Prepare the SQL statement
+    $sql = "INSERT INTO Students (fname, lname, sname, gender, DOB, AdmissionNo, Religion, ParentEmail, Class, ParentContact, ShortBio, ProfilePic)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    
+    // Create a prepared statement
+    $stmt = $con->prepare($sql);
+
+    // Bind parameters to the prepared statement
+    $stmt->bind_param("ssssssssssss", $fname, $lname, $sname, $gender, $DOB, $AdmissionNo, $Religion, $PEmail, $Class, $PContact, $ShortBio, $ProfilePic);
+
+    // Execute the prepared statement
+    $result = $stmt->execute();
+
+    // Check for errors
+    if ($result === false) {
+        $alert = '<div class="alert alert-danger" role="alert">Error: '. $con->error. '</div>';
+    } else {
+        $alert = '<div class="alert alert-success" role="alert">New record created successfully</div>';
+    }
+
+    // Close the prepared statement
+    $stmt->close();
+
     
 }
+
 ?>
 
 
@@ -30,7 +57,7 @@ if(isset($_POST["submit"])) {
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>AKKHOR | Admission Form</title>
+    <title>SAMGE | Admission Form</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Favicon -->
@@ -62,7 +89,7 @@ if(isset($_POST["submit"])) {
     <div id="preloader"></div>
     <!-- Preloader End Here -->
     <div id="wrapper" class="wrapper bg-ash">
-        <!-- Header Menu Area Start Here -->
+       <!-- Header Menu Area Start Here -->
         <div class="navbar navbar-expand-md header-menu-one bg-light">
             <div class="nav-bar-header-one">
                 <div class="header-logo">
@@ -70,7 +97,7 @@ if(isset($_POST["submit"])) {
                         <img src="img/logo.png" alt="logo">
                     </a>
                 </div>
-                  <div class="toggle-button sidebar-toggle">
+                 <div class="toggle-button sidebar-toggle">
                     <button type="button" class="item-link">
                         <span class="btn-icon-wrap">
                             <span></span>
@@ -133,128 +160,32 @@ if(isset($_POST["submit"])) {
                             aria-expanded="false">
                             <i class="far fa-envelope"></i>
                             <div class="item-title d-md-none text-16 mg-l-10">Message</div>
-                            <span>5</span>
+                            
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right">
                             <div class="item-header">
-                                <h6 class="item-title">05 Message</h6>
+                                <h6 class="item-title"> Message</h6>
                             </div>
-                            <div class="item-content">
-                                <div class="media">
-                                    <div class="item-img bg-skyblue author-online">
-                                        <img src="img/figure/student11.png" alt="img">
-                                    </div>
-                                    <div class="media-body space-sm">
-                                        <div class="item-title">
-                                            <a href="#">
-                                                <span class="item-name">Maria Zaman</span> 
-                                                <span class="item-time">18:30</span> 
-                                            </a>  
-                                        </div>
-                                        <p>What is the reason of buy this item. 
-                                        Is it usefull for me.....</p>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img bg-yellow author-online">
-                                        <img src="img/figure/student12.png" alt="img">
-                                    </div>
-                                    <div class="media-body space-sm">
-                                        <div class="item-title">
-                                            <a href="#">
-                                                <span class="item-name">Benny Roy</span> 
-                                                <span class="item-time">10:35</span> 
-                                            </a>  
-                                        </div>
-                                        <p>What is the reason of buy this item. 
-                                        Is it usefull for me.....</p>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img bg-pink">
-                                        <img src="img/figure/student13.png" alt="img">
-                                    </div>
-                                    <div class="media-body space-sm">
-                                        <div class="item-title">
-                                            <a href="#">
-                                                <span class="item-name">Steven</span> 
-                                                <span class="item-time">02:35</span> 
-                                            </a>  
-                                        </div>
-                                        <p>What is the reason of buy this item. 
-                                        Is it usefull for me.....</p>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-img bg-violet-blue">
-                                        <img src="img/figure/student11.png" alt="img">
-                                    </div>
-                                    <div class="media-body space-sm">
-                                        <div class="item-title">
-                                            <a href="#">
-                                                <span class="item-name">Joshep Joe</span> 
-                                                <span class="item-time">12:35</span> 
-                                            </a>  
-                                        </div>
-                                        <p>What is the reason of buy this item. 
-                                        Is it usefull for me.....</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
+                           
                     <li class="navbar-item dropdown header-notification">
                         <a class="navbar-nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
                             aria-expanded="false">
                             <i class="far fa-bell"></i>
                             <div class="item-title d-md-none text-16 mg-l-10">Notification</div>
-                            <span>8</span>
+                        
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right">
                             <div class="item-header">
-                                <h6 class="item-title">03 Notifiacations</h6>
+                                <h6 class="item-title"> Notifiacations</h6>
                             </div>
-                            <div class="item-content">
-                                <div class="media">
-                                    <div class="item-icon bg-skyblue">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="media-body space-sm">
-                                        <div class="post-title">Complete Today Task</div>
-                                        <span>1 Mins ago</span>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-icon bg-orange">
-                                        <i class="fas fa-calendar-alt"></i>
-                                    </div>
-                                    <div class="media-body space-sm">
-                                        <div class="post-title">Director Metting</div>
-                                        <span>20 Mins ago</span>
-                                    </div>
-                                </div>
-                                <div class="media">
-                                    <div class="item-icon bg-violet-blue">
-                                        <i class="fas fa-cogs"></i>
-                                    </div>
-                                    <div class="media-body space-sm">
-                                        <div class="post-title">Update Password</div>
-                                        <span>45 Mins ago</span>
-                                    </div>
+                            <!--  -->
+                               
                                 </div>
                             </div>
                         </div>
                     </li>
-                     <li class="navbar-item dropdown header-language">
-                        <a class="navbar-nav-link dropdown-toggle" href="#" role="button" 
-                        data-toggle="dropdown" aria-expanded="false"><i class="fas fa-globe-americas"></i>EN</a>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="#">English</a>
-                            <a class="dropdown-item" href="#">Spanish</a>
-                            <a class="dropdown-item" href="#">Franchis</a>
-                            <a class="dropdown-item" href="#">Chiness</a>
                         </div>
                     </li>
                 </ul>
@@ -272,28 +203,13 @@ if(isset($_POST["submit"])) {
                </div>
                 <div class="sidebar-menu-content">
                     <ul class="nav nav-sidebar-menu sidebar-toggle-view">
-                        <li class="nav-item sidebar-nav-item">
-                            <a href="#" class="nav-link"><i class="flaticon-dashboard"></i><span>Dashboard</span></a>
-                            <ul class="nav sub-group-menu">
-                                <li class="nav-item">
-                                    <a href="index.html" class="nav-link"><i class="fas fa-angle-right"></i>Admin</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="index3.html" class="nav-link"><i
-                                            class="fas fa-angle-right"></i>Students</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="index4.html" class="nav-link"><i class="fas fa-angle-right"></i>Parents</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="index5.html" class="nav-link"><i
-                                            class="fas fa-angle-right"></i>Teachers</a>
-                                </li>
-                            </ul>
+                        <li >
+                            <a href="index.htm" class="nav-link"><i class="flaticon-dashboard"></i><span>Dashboard</span></a>
+                           
                         </li>
                         <li class="nav-item sidebar-nav-item">
                             <a href="#" class="nav-link"><i class="flaticon-classmates"></i><span>Students</span></a>
-                            <ul class="nav sub-group-menu sub-group-active">
+                            <ul class="nav sub-group-menu">
                                 <li class="nav-item">
                                     <a href="all-student.html" class="nav-link"><i class="fas fa-angle-right"></i>All
                                         Students</a>
@@ -303,7 +219,7 @@ if(isset($_POST["submit"])) {
                                             class="fas fa-angle-right"></i>Student Details</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="admit-form.html" class="nav-link menu-active"><i
+                                    <a href="admit-form.html" class="nav-link"><i
                                             class="fas fa-angle-right"></i>Admission Form</a>
                                 </li>
                                 <li class="nav-item">
@@ -351,19 +267,7 @@ if(isset($_POST["submit"])) {
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item sidebar-nav-item">
-                            <a href="#" class="nav-link"><i class="flaticon-books"></i><span>Library</span></a>
-                            <ul class="nav sub-group-menu">
-                                <li class="nav-item">
-                                    <a href="all-book.html" class="nav-link"><i class="fas fa-angle-right"></i>All
-                                        Book</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="add-book.html" class="nav-link"><i class="fas fa-angle-right"></i>Add New
-                                        Book</a>
-                                </li>
-                            </ul>
-                        </li>
+                        
                         <li class="nav-item sidebar-nav-item">
                             <a href="#" class="nav-link"><i class="flaticon-technological"></i><span>Acconunt</span></a>
                             <ul class="nav sub-group-menu">
@@ -399,14 +303,7 @@ if(isset($_POST["submit"])) {
                             <a href="all-subject.html" class="nav-link"><i
                                     class="flaticon-open-book"></i><span>Subject</span></a>
                         </li>
-                        <li class="nav-item">
-                            <a href="class-routine.html" class="nav-link"><i class="flaticon-calendar"></i><span>Class
-                                    Routine</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="student-attendence.html" class="nav-link"><i
-                                    class="flaticon-checklist"></i><span>Attendence</span></a>
-                        </li>
+                       
                         <li class="nav-item sidebar-nav-item">
                             <a href="#" class="nav-link"><i class="flaticon-shopping-list"></i><span>Exam</span></a>
                             <ul class="nav sub-group-menu">
@@ -425,7 +322,7 @@ if(isset($_POST["submit"])) {
                                     class="flaticon-bus-side-view"></i><span>Transport</span></a>
                         </li>
                         <li class="nav-item">
-                            <a href="hostel.html" class="nav-link"><i class="flaticon-bed"></i><span>Hostel</span></a>
+                            <a href="hostel.html" class="nav-link"><i class="flaticon-bed"></i><span>Dormitory</span></a>
                         </li>
                         <li class="nav-item">
                             <a href="notice-board.html" class="nav-link"><i
@@ -435,37 +332,7 @@ if(isset($_POST["submit"])) {
                             <a href="messaging.html" class="nav-link"><i
                                     class="flaticon-chat"></i><span>Messeage</span></a>
                         </li>
-                        <li class="nav-item sidebar-nav-item">
-                            <a href="#" class="nav-link"><i class="flaticon-menu-1"></i><span>UI Elements</span></a>
-                            <ul class="nav sub-group-menu">
-                                <li class="nav-item">
-                                    <a href="notification-alart.html" class="nav-link"><i class="fas fa-angle-right"></i>Alart</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="button.html" class="nav-link"><i class="fas fa-angle-right"></i>Button</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="grid.html" class="nav-link"><i class="fas fa-angle-right"></i>Grid</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="modal.html" class="nav-link"><i class="fas fa-angle-right"></i>Modal</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="progress-bar.html" class="nav-link"><i class="fas fa-angle-right"></i>Progress Bar</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="ui-tab.html" class="nav-link"><i class="fas fa-angle-right"></i>Tab</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="ui-widget.html" class="nav-link"><i
-                                            class="fas fa-angle-right"></i>Widget</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="map.html" class="nav-link"><i
-                                    class="flaticon-planet-earth"></i><span>Map</span></a>
-                        </li>
+
                         <li class="nav-item">
                             <a href="account-settings.html" class="nav-link"><i
                                     class="flaticon-settings"></i><span>Account</span></a>
@@ -477,21 +344,22 @@ if(isset($_POST["submit"])) {
             <div class="dashboard-content-one">
                 <!-- Breadcubs Area Start Here -->
                 <div class="breadcrumbs-area">
-                    <h3>Students</h3>
+                    <h3>Admin Dashboard</h3>
                     <ul>
                         <li>
-                            <a href="index.html">Home</a>
+                            <a href="index.htm">Home</a>
                         </li>
-                        <li>Student Admit Form</li>
+                        <!-- <li>Admin</li>
                     </ul>
                 </div>
-                <!-- Breadcubs Area End Here -->
+                <!- Breadcubs Area End Here -->
+                <!-- Dashboard summery Start Here -->
                 <!-- Admit Form Area Start Here -->
                 <div class="card height-auto">
                     <div class="card-body">
                         <div class="heading-layout1">
                             <div class="item-title">
-                                <h3>Add New Students</h3>
+                                <h3>Samge School Admission Form</h3>
                             </div>
                             <div class="dropdown">
                                 <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"
@@ -520,12 +388,12 @@ if(isset($_POST["submit"])) {
 
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Surname *</label>
-                                    <input type="text" name="Sname" placeholder="Enter Surname" class="form-control">
+                                    <input type="text" name="sname" placeholder="Enter Surname" class="form-control">
                                 </div>
 
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Gender *</label>
-                                    <select class="select2">
+                                    <select name="gender" class="select2">
                                         <option value="">Please Select Gender *</option>
                                         <option value="1">Male</option>
                                         <option value="2">Female</option>
@@ -534,18 +402,18 @@ if(isset($_POST["submit"])) {
                                 </div>
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Date Of Birth *</label>
-                                    <input type="text" placeholder="dd/mm/yyyy" class="form-control air-datepicker"
+                                    <input type="text" placeholder="dd/mm/yyyy" name="date" class="form-control air-datepicker"
                                         data-position='bottom right'>
                                     <i class="far fa-calendar-alt"></i>
                                 </div>
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
-                                    <label>Admission Number</label>
-                                    <input type="text" placeholder="" class="form-control">
+                                    <label>Admission Number *</label>
+                                    <input type="text" placeholder="" name="admission" class="form-control">
                                 </div>
                                
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Religion *</label>
-                                    <select class="select2">
+                                    <select name="religion" class="select2">
                                         <option value="">Please Select Religion *</option>
                                         <option value="1">Islam</option>
                                         <option value="3">Christian</option>
@@ -555,11 +423,11 @@ if(isset($_POST["submit"])) {
                                 </div>
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Parent's E-Mail</label>
-                                    <input type="email" placeholder="" class="form-control">
+                                    <input type="email" placeholder="" name="Pemail" class="form-control">
                                 </div>
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Class *</label>
-                                    <select class="select2">
+                                    <select name="class" class="select2">
                                         <option value="">Please Select Class *</option>
                                         <option value="1">Play</option>
                                         <option value="2">Nursery</option>
@@ -576,7 +444,7 @@ if(isset($_POST["submit"])) {
                              
                                 <div class="col-xl-3 col-lg-6 col-12 form-group">
                                     <label>Parent's Contact</label>
-                                    <input type="text" placeholder="" class="form-control">
+                                    <input type="text" placeholder="" name="Pcontact" class="form-control">
                                 </div>
                                 <div class="col-lg-6 col-12 form-group">
                                     <label>Short BIO</label>
@@ -585,11 +453,11 @@ if(isset($_POST["submit"])) {
                                 </div>
                                 <div class="col-lg-6 col-12 form-group mg-t-30">
                                     <label class="text-dark-medium">Upload Student Photo (150px X 150px)</label>
-                                    <input type="file" class="form-control-file">
+                                    <input type="file" name="Profilepic" class="form-control-file">
                                 </div>
                                 <div class="col-12 form-group mg-t-8">
-                                    <button type="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Save</button>
-                                    <button type="reset" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Reset</button>
+                                    <button type="submit" name="submit" class="btn-fill-lg btn-gradient-yellow btn-hover-bluedark">Save</button>
+                                    <button type="reset" name="reset" class="btn-fill-lg bg-blue-dark btn-hover-yellow">Reset</button>
                                 </div>
                             </div>
                         </form>
