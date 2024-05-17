@@ -1,10 +1,30 @@
+<?php
+include 'PHP/connection.php';
+
+if(isset($_POST["submit"])) {
+    $name = $_POST["name"];
+    $password = $_POST["password"];
+    $sql = "INSERT INTO 'login' (name,password) VALUES ('$name','$password')";
+    $result = mysqli_query($con, $sql);
+   
+    if($result) {
+        echo "Data Inserted Successfully";
+    } else {
+        echo "Error: ";
+    }
+    
+    
+}
+?>
+
+
 <!doctype html>
 <html class="no-js" lang="">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>AKKHOR | Login</title>
+    <title>SAMGE | Login</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Favicon -->
@@ -28,7 +48,8 @@
 </head>
 
 <body>
-    <!-- Preloader Start Here -->
+    
+ <!-- Preloader Start Here -->
     <div id="preloader"></div>
     <!-- Preloader End Here -->
     <!-- Login Page Start Here -->
@@ -36,17 +57,17 @@
         <div class="login-page-content">
             <div class="login-box">
                 <div class="item-logo">
-                    <img src="img/logo2.png" alt="logo">
+                    <img src="img/Samge Logo1.png.png" alt="logo">
                 </div>
-                <form action="index.html" class="login-form">
+                <form class="login-form" method="post">
                     <div class="form-group">
                         <label>Username</label>
-                        <input type="text" placeholder="Enter usrename" class="form-control">
+                        <input type="text" name="name" placeholder="Enter usrename" class="form-control">
                         <i class="far fa-envelope"></i>
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="text" placeholder="Enter password" class="form-control">
+                        <input type="text" name="password" placeholder="Enter password" class="form-control">
                         <i class="fas fa-lock"></i>
                     </div>
                     <div class="form-group d-flex align-items-center justify-content-between">
@@ -57,7 +78,7 @@
                         <a href="#" class="forgot-btn">Forgot Password?</a>
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="login-btn">Login</button>
+                        <button type="submit" name="submit" class="login-btn">Login</button>
                     </div>
                 </form>
                 <div class="login-social">
